@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 16-ene-2025 19:34:12 by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="POJOs.PeliculaSala" table="pelicula_sala" catalog="cine" optimistic-lock="version">
+        <id name="id" type="java.lang.Integer">
+            <column name="id" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="peliculas" class="POJOs.Peliculas" fetch="select">
+            <column name="pid" not-null="true" />
+        </many-to-one>
+        <many-to-one name="salas" class="POJOs.Salas" fetch="select">
+            <column name="sid" not-null="true" />
+        </many-to-one>
+        <property name="estado" type="int">
+            <column name="estado" not-null="true" />
+        </property>
+    </class>
+</hibernate-mapping>
