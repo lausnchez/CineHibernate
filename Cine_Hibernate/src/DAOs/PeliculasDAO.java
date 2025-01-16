@@ -5,7 +5,9 @@
  */
 package DAOs;
 
+import POJOs.Peliculas;
 import cine_hibernate.HibernateUtil;
+import java.util.List;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -34,7 +36,7 @@ public class PeliculasDAO {
     /**
      * Método que nos muestra todas las películas de la tabla películas
      */
-    private void mostrarTodasLasPeliculas(){
+    public void mostrarTodasLasPeliculas(){
         /*
         +---------------+---------------+------+-----+---------+----------------+
         | Field         | Type          | Null | Key | Default | Extra          |
@@ -53,5 +55,28 @@ public class PeliculasDAO {
         | Estado        | int(11)       | NO   |     | NULL    |                |
         +---------------+---------------+------+-----+---------+----------------+
         */
+        try{
+            iniciarOperacion();
+            String query = "FROM Peliculas";
+            List<Peliculas> listado = sesion.createQuery(query).list();
+            for(Peliculas resultado: listado){
+                System.out.println(resultado.getPid()+ ": " +resultado.getTitulo());
+                System.out.println("    -> Director: " + resultado.getDirector());
+                System.out.println("    -> Nacionalidad: " + resultado.getNacionalidad());
+                System.out.println("    -> Género: " + resultado.getGenero());
+                System.out.println("    -> Clasificación: " + resultado.getClasificacion());
+                System.out.println("    -> Descripción: " + resultado.getDescr());
+                System.out.println("    -> Duración: " + resultado.getDuracion());
+                System.out.println("    -> Actores: " + resultado.getActores());
+                System.out.println("    -> Link exterior: " + resultado.getLinkExterior());
+                System.out.println("    -> Link imagen: " + resultado.getLinkImagen());
+                System.out.println("    -> Estado: " + resultado.getEstado());
+            }
+        }catch(HibernateException he){
+            manejarExcepcion(he);
+            throw he;
+        }finally{
+            sesion.close();
+        }
     }
 }
