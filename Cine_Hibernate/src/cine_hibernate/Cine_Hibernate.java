@@ -73,6 +73,7 @@ public class Cine_Hibernate {
                     break;
                 case 4:
                     // Eliminar una película
+                    peliculas.eliminarPelicula();
                     break;
                 case 5:
                     // Mostrar una película

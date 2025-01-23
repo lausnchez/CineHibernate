@@ -476,6 +476,25 @@ public class PeliculasDAO {
         }
     }
     
+    public void eliminarPelicula(){
+        System.out.println(" - - - - Película a eliminar");
+        Peliculas pelicula = buscarPeliculaUnica();
+        mostrarPelicula(pelicula);
+        if(Utils.pedirConfirmacion("¿Desea borrar ésta película?")){
+            try{
+                iniciarOperacion();
+                sesion.delete(pelicula);
+                tx.commit();
+                System.out.println("Película eliminada con éxito");
+            }catch(HibernateException he){
+                manejarExcepcion(he);
+                throw he;
+            }finally{
+                sesion.close();
+            }
+        }
+    }
+    
     /**
      * Muestra por consola enumerados los posibles parámetros que puede tener una
      * pelicula
@@ -512,6 +531,4 @@ public class PeliculasDAO {
         }while(opcion < 0);
         return opcion;
     }
-    
-    
 }
