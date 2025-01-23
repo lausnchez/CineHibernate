@@ -286,6 +286,9 @@ public class PeliculasDAO {
         try{
             iniciarOperacion();
             ID = (int)sesion.save(nuevaPelicula);
+            tx.commit();
+            System.out.println("Resultado - - - - -");
+            mostrarPelicula(nuevaPelicula);
         }catch(HibernateException he){
             manejarExcepcion(he);
             throw he;
@@ -295,8 +298,220 @@ public class PeliculasDAO {
         return ID;
     }
     
-    
-    public void modificarPelicula(Peliculas pelicula){
+    /**
+     * Busca una película única por PID. Devuelve null en caso de no encontrar
+     * resultados.
+     * @param PID 
+     */
+    public Peliculas buscarPeliculaUnica(){
+        Peliculas resultado = null;
+        String parametroQuery = "";
+        String busqueda = "";
         
+        // PEDIR PARÁMETROS
+        mostrarParametrosPeliculas();
+        int opcion = pedirOpcion();
+        
+        System.out.println("¿Qué desea buscar?");
+        System.out.print("    > ");
+        busqueda = scan.nextLine();
+        
+        // PREPARAR QUERY
+        switch(opcion){
+            default:
+                System.out.println("Valor no válido");
+                break;
+            case 1:
+                parametroQuery = " pid ";
+                break;
+            case 2:
+                parametroQuery = " titulo ";
+                break;
+            case 3:
+                parametroQuery = " director";
+                break;
+            case 4:
+                parametroQuery = " nacionalidad ";
+                break;
+            case 5:
+                parametroQuery = " genero ";
+                break;
+            case 6:
+                parametroQuery = " clasificacion ";
+                break;
+            case 7:
+                parametroQuery = " descr ";
+                break;
+            case 8:
+                parametroQuery = " duracion ";
+                break;
+            case 9:
+                parametroQuery = " sctores ";
+                break;
+            case 10:
+                parametroQuery = " linkExterior ";
+                break;
+            case 11:
+                parametroQuery = " linkImagen ";
+                break;
+            case 12:
+                parametroQuery = " estado ";
+                break;   
+        }
+        
+        if(opcion <= 12 && opcion > 0){
+            try{
+                iniciarOperacion();
+                String query = "FROM Peliculas p WHERE p." + parametroQuery + "= \'" + busqueda + "\'";
+                resultado = (Peliculas)sesion.createQuery(query).uniqueResult();
+            }catch(HibernateException he){
+                manejarExcepcion(he);
+                throw he;
+            }finally{
+                sesion.close();
+            }
+        }
+        if(resultado == null){
+            System.out.println("No se encontraron resultados");
+        }
+        return resultado;
     }
+    
+    /**
+     * 
+     */
+    public void modificarPelicula(){
+        System.out.println(" - - - - - - Película a Editar: ");
+        Peliculas busqueda = buscarPeliculaUnica();
+        if(busqueda != null){
+            mostrarPelicula(busqueda);
+            if(Utils.pedirConfirmacion("¿Es ésta la película que desea modificar?")){
+                System.out.println("\n - - - - - - - - - - - - - - - - - - - -");
+                System.out.println("¿Qué desea modificar?");
+                System.out.println("    > 1. Título");
+                System.out.println("    > 2. Director");
+                System.out.println("    > 3. Nacionalidad");
+                System.out.println("    > 4. Género");
+                System.out.println("    > 5. Clasificación");
+                System.out.println("    > 6. Descripción");
+                System.out.println("    > 7. Duración");
+                System.out.println("    > 8. Actores");
+                System.out.println("    > 9. Link exterior");
+                System.out.println("    > 10. Link de Imagen");
+                System.out.println("    > 11. Estado");
+                int opcion = pedirOpcion();
+                switch(opcion){
+                    default:
+                        System.out.println("Valor no válido");
+                        break;
+                    case 1:
+                        // TITULO
+                        System.out.println("Antiguo Título: " + busqueda.getTitulo());
+                        insertarTitulo(busqueda);
+                        break;
+                    case 2:
+                        // DIRECTOR
+                        System.out.println("Antiguo Director: " + busqueda.getDirector());
+                        insertarDirector(busqueda);
+                        break;
+                    case 3:
+                        // NACIONALIDAD
+                        System.out.println("Antigua Nacionalidad: " + busqueda.getNacionalidad());
+                        insertarDirector(busqueda);
+                        break;
+                    case 4:
+                        // GENERO
+                        System.out.println("Antiguo Género: " + busqueda.getGenero());
+                        insertarGenero(busqueda);
+                        break;
+                    case 5:
+                        // CLASIFICACION
+                        System.out.println("Antigua Clasificación: " + busqueda.getClasificacion());
+                        insertarClasificacion(busqueda);
+                        break;
+                    case 6:
+                        // DESCRIPCION
+                        System.out.println("Antiguo Descripción: " + busqueda.getDescr());
+                        insertarDescripcion(busqueda);
+                        break;
+                    case 7:
+                        // DURACION
+                        System.out.println("Antigua Duración: " + busqueda.getDuracion());
+                        insertarDuracion(busqueda);
+                        break;
+                    case 8:
+                        // ACTORES
+                        System.out.println("Antiguos Actores: " + busqueda.getActores());
+                        insertarActores(busqueda);
+                        break;
+                    case 9:
+                        // LINK EXTERIOR
+                        System.out.println("Antiguo Link Exterior: " + busqueda.getLinkExterior());
+                        insertarLinkExterior(busqueda);
+                        break;
+                    case 10:
+                        // LINK IMAGEN
+                        System.out.println("Antigua Link Imagen: " + busqueda.getLinkImagen());
+                        insertarLinkImagen(busqueda);
+                        break;
+                    case 11:
+                        // ESTADO
+                        System.out.println("Antiguo Estado: " + busqueda.getEstado());
+                        insertarEstado(busqueda);
+                        break;   
+                }
+                
+            }
+            try{
+                iniciarOperacion();
+                sesion.update(busqueda);
+                tx.commit();
+            }catch(HibernateException he){
+                manejarExcepcion(he);
+                throw he;
+            }finally{
+                sesion.close();
+            }
+            mostrarPelicula(busqueda);
+        }
+    }
+    
+    /**
+     * Muestra por consola enumerados los posibles parámetros que puede tener una
+     * pelicula
+     */
+    public void mostrarParametrosPeliculas(){
+        System.out.println("    > 1. PID");
+        System.out.println("    > 2. Título");
+        System.out.println("    > 3. Director");
+        System.out.println("    > 4. Nacionalidad");
+        System.out.println("    > 5. Género");
+        System.out.println("    > 6. Clasificación");
+        System.out.println("    > 7. Descripción");
+        System.out.println("    > 8. Duración");
+        System.out.println("    > 9. Actores");
+        System.out.println("    > 10. Link exterior");
+        System.out.println("    > 11. Link de Imagen");
+        System.out.println("    > 12. Estado");
+    }
+    
+    public int pedirOpcion(){
+        String linea = "";
+        int opcion = -1;
+        do{
+                System.out.print("> OPCIÓN: ");
+                linea = scan.nextLine();
+                if(!Utils.comprobarInt(linea)){
+                    System.out.println("Inserte un valor numérico");
+                }else{
+                    opcion = Integer.parseInt(linea);
+                    if(opcion < 0){
+                        System.out.println("Valor no válido");
+                    }
+                }
+        }while(opcion < 0);
+        return opcion;
+    }
+    
+    
 }
