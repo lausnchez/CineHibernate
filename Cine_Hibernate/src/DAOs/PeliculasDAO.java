@@ -531,4 +531,10 @@ public class PeliculasDAO {
         }while(opcion < 0);
         return opcion;
     }
+    
+    public List<Peliculas> recogerTodasLasPeliculas(){
+        iniciarOperacion();
+        List<Peliculas> listado = sesion.createQuery("from Peliculas p").list();
+        return listado;
+    }
 }

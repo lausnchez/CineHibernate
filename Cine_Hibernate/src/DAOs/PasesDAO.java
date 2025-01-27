@@ -5,7 +5,9 @@
  */
 package DAOs;
 
+import POJOs.Pases;
 import cine_hibernate.HibernateUtil;
+import java.util.List;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -31,4 +33,9 @@ public class PasesDAO {
     }
     
     // FUNCIONES DE LA CLASE ---------------------------------------------------
+    public List<Pases> recogerTresPrimerosPases(){
+        iniciarOperacion();
+        List<Pases> listado = sesion.createQuery("from Pases p WHERE pid < 4").list();
+        return listado;
+    }
 }

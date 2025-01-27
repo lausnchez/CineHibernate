@@ -5,7 +5,9 @@
  */
 package DAOs;
 
+import POJOs.Salas;
 import cine_hibernate.HibernateUtil;
+import java.util.List;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -31,4 +33,9 @@ public class SalasDAO {
     }
     
     // FUNCIONES DE LA CLASE ---------------------------------------------------
+    public List<Salas> recogerTodasLasSalas(){
+        iniciarOperacion();
+        List<Salas> listadoSalas = sesion.createQuery("from Salas s").list();
+        return listadoSalas;
+    }
 }

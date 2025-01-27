@@ -82,7 +82,36 @@ public class Cine_Hibernate {
                     if(busqueda != null){
                         peliculas.mostrarPelicula(busqueda);
                     }
-                    break;          
+                    break;   
+                case 6:
+                    // Mostrar películas del actor
+                    break;
+                case 7:
+                    // Llenar salas (select a disponibles y replicar)
+                        // Sala 1 Sesion 2 peli 2
+                        // Sala 1 Sesion 3 pel 15
+                        // Sala 2 Sesion 1 peli 1
+                        // Sala 2 Sesion 2 peli 2
+                        // Sala 2 Sesion 3 peli 15
+                        // Sala 3 Sesion 1 peli 1
+                        // Sala 3 Sesion 2 peli 2
+                        // Sala 3 Sesion 3 peli 15
+                    
+                    break;
+                case 8:
+                    // Consultar todas las horas/sesiones y salas de una pelicula dada (por titulo)
+                    // Tablas peliculas, pases, pase_sala, salas
+                    /*
+                        PELICULAS -> PID
+                        PASE_SALA -> ID, SID, TID
+                        PASES -> TID, HORA
+                        SALAS -> descr
+                        DISPONIBLE -> PID, SID, TID
+                    
+                        PELICULA, SESION, SALA(SALAS) , HORA(PASES)
+                    */
+                    
+                    break;
             }
             
         }while(opcion != 0);

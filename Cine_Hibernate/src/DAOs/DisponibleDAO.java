@@ -5,7 +5,9 @@
  */
 package DAOs;
 
+import POJOs.Salas;
 import cine_hibernate.HibernateUtil;
+import java.util.List;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -31,4 +33,34 @@ public class DisponibleDAO {
     }
     
     // FUNCIONES DE LA CLASE ---------------------------------------------------
+    public void rellenarDisponibles(){
+        // Llenar salas (select a disponibles y replicar)
+            // Sala 1 Pase 2 peli 2
+            // Sala 1 Pase 3 pel 15
+            // Sala 2 Pase 1 peli 1
+            // Sala 2 Pase 2 peli 2
+            // Sala 2 Pase 3 peli 15
+            // Sala 3 Pase 1 peli 1
+            // Sala 3 Pase 2 peli 2
+            // Sala 3 Pase 3 peli 15
+        /*
+            Primero como deberemos hacer esto por cada sala tres veces haremos un
+            bucle que se hará 3 veces, que es el máximo de salas disponibles.
+            Después haremos 3 pases, por cada una de las salas, y en cada uno de
+            ellos habrá una película distinta.
+            */
+            
+        SalasDAO salasDAO = new SalasDAO();
+            
+        List<Salas> listadoSalas = salasDAO.recogerTodasLasSalas();
+        int numeroMaximoDeSalas = listadoSalas.size();
+        
+        
+        
+        // POR CADA SALA
+        for(int salaActual=0; salaActual < numeroMaximoDeSalas; salaActual++){
+            
+        }
+    }
+    
 }

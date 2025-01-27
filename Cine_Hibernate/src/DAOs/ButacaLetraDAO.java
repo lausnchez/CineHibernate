@@ -5,7 +5,9 @@
  */
 package DAOs;
 
+import POJOs.ButacaLetra;
 import cine_hibernate.HibernateUtil;
+import java.util.List;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -31,4 +33,13 @@ public class ButacaLetraDAO {
     }
     
     // FUNCIONES DE LA CLASE ---------------------------------------------------
+    public List<ButacaLetra> recogerTodasLasButacas(){
+        List<ButacaLetra> listadoCompleto = null;
+        String query = "from ButacaLetra bl";
+        
+        iniciarOperacion();
+        listadoCompleto = sesion.createQuery(query).list();
+        
+        return listadoCompleto;
+    }
 }
