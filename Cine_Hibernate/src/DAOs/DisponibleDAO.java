@@ -5,6 +5,7 @@
  */
 package DAOs;
 
+import POJOs.Peliculas;
 import POJOs.Salas;
 import cine_hibernate.HibernateUtil;
 import java.util.List;
@@ -49,18 +50,12 @@ public class DisponibleDAO {
             Después haremos 3 pases, por cada una de las salas, y en cada uno de
             ellos habrá una película distinta.
             */
-            
+        
+        PeliculasDAO peliDAO = new PeliculasDAO();
         SalasDAO salasDAO = new SalasDAO();
-            
-        List<Salas> listadoSalas = salasDAO.recogerTodasLasSalas();
-        int numeroMaximoDeSalas = listadoSalas.size();
         
-        
-        
-        // POR CADA SALA
-        for(int salaActual=0; salaActual < numeroMaximoDeSalas; salaActual++){
-            
-        }
+        Peliculas peliABuscar = peliDAO.buscarPeliculaPorNombre();
+        Salas salaBuscar = salasDAO.buscarSalaPorNombre();
     }
     
 }

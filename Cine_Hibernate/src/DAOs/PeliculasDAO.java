@@ -11,6 +11,7 @@ import cine_hibernate.Utils;
 import java.util.List;
 import java.util.Scanner;
 import org.hibernate.HibernateException;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -371,6 +372,39 @@ public class PeliculasDAO {
                 sesion.close();
             }
         }
+        if(resultado == null){
+            System.out.println("No se encontraron resultados");
+        }
+        return resultado;
+    }
+    
+    /**
+     * Hace una consulta con una PreparedStatement y nos devuelve un único 
+     * resultado
+     * @return 
+     */
+    
+    public Peliculas buscarPeliculaPorNombre(){
+        Peliculas resultado = null;
+        String busqueda = "";
+        
+        System.out.println("¿Qué desea buscar?");
+        System.out.print("    > ");
+        busqueda = scan.nextLine();
+        
+        try{
+            iniciarOperacion();
+            Query query = sesion.createQuery("FROM Peliculas p WHERE p.Titulo = :param1");
+            query.setString("param1", busqueda);
+            query.uniqueResult();
+
+        }catch(HibernateException he){
+            manejarExcepcion(he);
+            throw he;
+        }finally{
+            sesion.close();
+        }
+            
         if(resultado == null){
             System.out.println("No se encontraron resultados");
         }
