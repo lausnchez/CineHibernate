@@ -68,43 +68,78 @@ public class DisponibleDAO {
             comprobarValido = false;
         }
         
-        System.out.println("Película: " + peliABuscar.getTitulo());
+        System.out.println("-------------------------");
+        System.out.println("\nPelícula: " + peliABuscar.getTitulo());
         System.out.println("Sala: " + salaBuscar.getSid());
         System.out.println("Pase: " + paseBuscar.getHora());
+        System.out.println("-------------------------");
         
         if(comprobarValido){
-            try{
-                iniciarOperacion();
-                Disponible nuevoDispo = null;
-                int contador = 0;
-                for(ButacaLetra butActual: butacasTotales){
-                    nuevoDispo = new Disponible();
-                    
-                    // Parámetros buscados
-                    nuevoDispo.setPases(paseBuscar);
-                    nuevoDispo.setPeliculas(peliABuscar);
-                    nuevoDispo.setSalas(salaBuscar);
+            if(comprobarViabilidad(salaBuscar.getSid(), paseBuscar.getTid())){
+                try{
+                    iniciarOperacion();
+                    Disponible nuevoDispo = null;
+                    int contador = 0;
+                    for(ButacaLetra butActual: butacasTotales){
+                        nuevoDispo = new Disponible();
 
-                    // Butacas
-                    nuevoDispo.setFila(butActual.getFila());
-                    nuevoDispo.setLetra(butActual.getLetra());
-                    nuevoDispo.setButacas(butActual.getButaca());
-                    nuevoDispo.setEstado(0);
-                    nuevoDispo.setPos(butActual.getPos());
+                        // Parámetros buscados
+                        nuevoDispo.setPases(paseBuscar);
+                        nuevoDispo.setPeliculas(peliABuscar);
+                        nuevoDispo.setSalas(salaBuscar);
 
-                    sesion.save(nuevoDispo);
-                    contador++;
+                        // Butacas
+                        nuevoDispo.setFila(butActual.getFila());
+                        nuevoDispo.setLetra(butActual.getLetra());
+                        nuevoDispo.setButacas(butActual.getButaca());
+                        nuevoDispo.setEstado(0);
+                        nuevoDispo.setPos(butActual.getPos());
+
+                        sesion.save(nuevoDispo);
+                        contador++;
+                    }
+
+                    tx.commit();
+                    System.out.println("- Se han agregado " + contador + " asientos -");
+                }catch(HibernateException he){
+                    manejarExcepcion(he);
+                    throw he;
+                }finally{
+                    sesion.close();
                 }
-
-                tx.commit();
-                System.out.println("- Se han agregado " + contador + " asientos -");
-            }catch(HibernateException he){
-                manejarExcepcion(he);
-                throw he;
-            }finally{
-                sesion.close();
-            }
-        }else System.out.println(" - Parámetros no válidos - ");
+            }else System.out.println("- Sesión ya reservada -");      
+        }else System.out.println(" - Parámetros no válidos - ");   
+    }
+    
+    /**
+     * En caso de que la sala y sesión que se le haya pasado estén disponibles
+     * devolverá true.
+     * @param sid
+     * @param tid
+     * @return 
+     */
+    public Boolean comprobarViabilidad(int sid, int tid){
+        List<Disponible> resultados = null;
+        try{
+            iniciarOperacion();
+            resultados = sesion.createQuery("FROM Disponible p WHERE p.tid=:param1 AND sid=:param2")
+                    .setParameter("param1", tid)
+                    .setParameter("param2", sid)
+                    .list();
+        }catch(HibernateException he){
+            manejarExcepcion(he);
+            throw he;
+        }finally{
+            sesion.close();
+        }
+        if(resultados == null || resultados.size() == 0){return true;}else return false;
+    }
+    
+    public void reservarEntradas(){
+        
+    }
+    
+    public void mostrarEntradas(){
         
     }
     

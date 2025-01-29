@@ -28,6 +28,7 @@ public class Cine_Hibernate {
         int opcion = -1;
         String linea = "";
         PeliculasDAO peliculas = new PeliculasDAO();
+        DisponibleDAO dispDAO = new DisponibleDAO();
         
         do{
             System.out.println("\n*************** MENU *****************");
@@ -104,7 +105,7 @@ public class Cine_Hibernate {
                         // Sala 3 Sesion 1 peli 1
                         // Sala 3 Sesion 2 peli 2
                         // Sala 3 Sesion 3 peli 15     
-                        DisponibleDAO dispDAO = new DisponibleDAO();
+                        
                         dispDAO.crearNuevoDisponibles();
                     break;
                 case 9:
@@ -127,6 +128,7 @@ public class Cine_Hibernate {
                     Mostramos cómo está actualmente la sala en forma de matriz
                     Ocupadas _ y libre la letra de la butaca, pasillo en blanco
                     */
+                    dispDAO.reservarEntradas();
                     break;
             }
             
