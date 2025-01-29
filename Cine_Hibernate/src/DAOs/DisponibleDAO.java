@@ -66,16 +66,15 @@ public class DisponibleDAO {
         }
         if(salaBuscar == null ){
             comprobarValido = false;
-        }
-        
-        System.out.println("-------------------------");
-        System.out.println("\nPelícula: " + peliABuscar.getTitulo());
-        System.out.println("Sala: " + salaBuscar.getSid());
-        System.out.println("Pase: " + paseBuscar.getHora());
-        System.out.println("-------------------------");
+        } 
         
         if(comprobarValido){
-            if(comprobarViabilidad(salaBuscar.getSid(), paseBuscar.getTid())){
+            if(recogerSalaPase(salaBuscar.getSid(), paseBuscar.getTid()) != null){
+                System.out.println("-------------------------");
+                System.out.println("\nPelícula: " + peliABuscar.getTitulo());
+                System.out.println("Sala: " + salaBuscar.getSid());
+                System.out.println("Pase: " + paseBuscar.getHora());
+                System.out.println("-------------------------");
                 try{
                     iniciarOperacion();
                     Disponible nuevoDispo = null;
@@ -118,11 +117,11 @@ public class DisponibleDAO {
      * @param tid
      * @return 
      */
-    public Boolean comprobarViabilidad(int sid, int tid){
+    public List<Disponible> recogerSalaPase(int sid, int tid){
         List<Disponible> resultados = null;
         try{
             iniciarOperacion();
-            resultados = sesion.createQuery("FROM Disponible p WHERE p.tid=:param1 AND sid=:param2")
+            resultados = sesion.createQuery("FROM Disponible WHERE tid=:param1 AND sid=:param2")
                     .setParameter("param1", tid)
                     .setParameter("param2", sid)
                     .list();
@@ -132,15 +131,30 @@ public class DisponibleDAO {
         }finally{
             sesion.close();
         }
-        if(resultados == null || resultados.size() == 0){return true;}else return false;
+        return resultados;
     }
     
     public void reservarEntradas(){
+        SalasDAO salasDAO = new SalasDAO();
+        PasesDAO pasesDAO = new PasesDAO();
         
+        
+        System.out.println("\n\n    - Reserva de entradas :");
+        // Pedimos una sala
+        System.out.println("> Sala: ");
+        Salas salaBuscar = salasDAO.buscarSalaPorSid();
+        // Pedimos un pase
+        System.out.println("> Hora del pase: ");
+        Pases paseBuscar = pasesDAO.recogerPasesUnico();
+        // Recogemos todas las butacas de la sala
+        
+        List<Disponible> listadoButacas = recogerSalaPase(salaBuscar.getSid(), paseBuscar.getTid());
+        if(listadoButacas != null){
+            
+        }else System.out.println("No se encontró una sesión en esa sala");     
     }
     
-    public void mostrarEntradas(){
+    public void mostrarEntradas(List<Disponible> butacas){
         
-    }
-    
+    }    
 }

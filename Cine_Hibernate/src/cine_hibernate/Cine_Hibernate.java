@@ -119,6 +119,8 @@ public class Cine_Hibernate {
                         DISPONIBLE -> PID, SID, TID
                     
                         PELICULA, SESION, SALA(SALAS) , HORA(PASES)
+                    
+                    
                     */
                     break;
                 case 10:
@@ -131,6 +133,11 @@ public class Cine_Hibernate {
                     dispDAO.reservarEntradas();
                     break;
             }
+            
+            /*
+            - Mostrar numero de peliculas
+            - Le pasas una peli y te dice en que salas y a que horas está
+            */
             
         }while(opcion != 0);
     }
