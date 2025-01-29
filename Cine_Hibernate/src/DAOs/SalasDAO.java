@@ -7,6 +7,7 @@ package DAOs;
 
 import POJOs.Salas;
 import cine_hibernate.HibernateUtil;
+import cine_hibernate.Utils;
 import java.util.List;
 import java.util.Scanner;
 import org.hibernate.HibernateException;
@@ -49,7 +50,7 @@ public class SalasDAO {
         return new Salas();
     }
     
-    public Salas buscarSalaPorNombre(){
+    public Salas buscarSalaPorSid(){
         Salas resultado = null;
         String busqueda = "";
         Scanner scan = new Scanner(System.in);
@@ -57,21 +58,22 @@ public class SalasDAO {
         System.out.println("¿Qué desea buscar?");
         System.out.print("    > ");
         busqueda = scan.nextLine();
+            
+        if(Utils.comprobarInt(busqueda)){
             try{
                 iniciarOperacion();
-                Query query = sesion.createQuery("FROM Salas s WHERE s.sid = :param1");
-                query.setString("param1", busqueda);
-                query.uniqueResult();               
+                resultado = (Salas)sesion.createQuery("FROM Salas s WHERE s.sid = :param1")
+                        .setParameter("param1", Integer.parseInt(busqueda))
+                        .uniqueResult();               
             }catch(HibernateException he){
                 manejarExcepcion(he);
                 throw he;
             }finally{
                 sesion.close();
-            }
-            
-        if(resultado == null){
-            System.out.println("No se encontraron resultados");
-        }
+            } 
+        }else System.out.println("Valor no válido");
+        
+        if(resultado == null)System.out.println("No se encontraron resultados");
         return resultado;
     }
 }

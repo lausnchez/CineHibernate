@@ -5,6 +5,9 @@
  */
 package DAOs;
 
+import POJOs.ButacaLetra;
+import POJOs.Disponible;
+import POJOs.Pases;
 import POJOs.Peliculas;
 import POJOs.Salas;
 import cine_hibernate.HibernateUtil;
@@ -34,28 +37,75 @@ public class DisponibleDAO {
     }
     
     // FUNCIONES DE LA CLASE ---------------------------------------------------
-    public void rellenarDisponibles(){
-        // Llenar salas (select a disponibles y replicar)
-            // Sala 1 Pase 2 peli 2
-            // Sala 1 Pase 3 pel 15
-            // Sala 2 Pase 1 peli 1
-            // Sala 2 Pase 2 peli 2
-            // Sala 2 Pase 3 peli 15
-            // Sala 3 Pase 1 peli 1
-            // Sala 3 Pase 2 peli 2
-            // Sala 3 Pase 3 peli 15
-        /*
-            Primero como deberemos hacer esto por cada sala tres veces haremos un
-            bucle que se hará 3 veces, que es el máximo de salas disponibles.
-            Después haremos 3 pases, por cada una de las salas, y en cada uno de
-            ellos habrá una película distinta.
-            */
-        
+    public void crearNuevoDisponibles(){
         PeliculasDAO peliDAO = new PeliculasDAO();
         SalasDAO salasDAO = new SalasDAO();
+        PasesDAO pasesDAO = new PasesDAO();
+        ButacaLetraDAO butacasDAO = new ButacaLetraDAO();
         
-        Peliculas peliABuscar = peliDAO.buscarPeliculaPorNombre();
-        Salas salaBuscar = salasDAO.buscarSalaPorNombre();
+        System.out.println("\n\n CREACIÓN DE UN NUEVO PASE EN SALA");
+        // Pedimos una película
+        System.out.println("> Película: ");
+        Peliculas peliABuscar = peliDAO.buscarPeliculaPorPID();
+        // Pedimos una sala
+        System.out.println("> Sala: ");
+        Salas salaBuscar = salasDAO.buscarSalaPorSid();
+        // Pedimos un pase
+        System.out.println("> Hora del pase: ");
+        Pases paseBuscar = pasesDAO.recogerPasesUnico();
+        // Recogemos todas las butacas de la sala
+        List<ButacaLetra> butacasTotales = butacasDAO.recogerTodasLasButacas();
+        
+        boolean comprobarValido = true;
+        
+        if(paseBuscar == null ){
+            comprobarValido = false;
+        }
+        if(peliABuscar == null ){
+            comprobarValido = false;
+        }
+        if(salaBuscar == null ){
+            comprobarValido = false;
+        }
+        
+        System.out.println("Película: " + peliABuscar.getTitulo());
+        System.out.println("Sala: " + salaBuscar.getSid());
+        System.out.println("Pase: " + paseBuscar.getHora());
+        
+        if(comprobarValido){
+            try{
+                iniciarOperacion();
+                Disponible nuevoDispo = null;
+                int contador = 0;
+                for(ButacaLetra butActual: butacasTotales){
+                    nuevoDispo = new Disponible();
+                    
+                    // Parámetros buscados
+                    nuevoDispo.setPases(paseBuscar);
+                    nuevoDispo.setPeliculas(peliABuscar);
+                    nuevoDispo.setSalas(salaBuscar);
+
+                    // Butacas
+                    nuevoDispo.setFila(butActual.getFila());
+                    nuevoDispo.setLetra(butActual.getLetra());
+                    nuevoDispo.setButacas(butActual.getButaca());
+                    nuevoDispo.setEstado(0);
+                    nuevoDispo.setPos(butActual.getPos());
+
+                    sesion.save(nuevoDispo);
+                    contador++;
+                }
+
+                tx.commit();
+                System.out.println("- Se han agregado " + contador + " asientos -");
+            }catch(HibernateException he){
+                manejarExcepcion(he);
+                throw he;
+            }finally{
+                sesion.close();
+            }
+        }else System.out.println(" - Parámetros no válidos - ");
+        
     }
     
 }

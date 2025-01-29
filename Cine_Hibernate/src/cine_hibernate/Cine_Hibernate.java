@@ -5,6 +5,7 @@
  */
 package cine_hibernate;
 
+import DAOs.DisponibleDAO;
 import DAOs.PeliculasDAO;
 import POJOs.Peliculas;
 import java.util.Scanner;
@@ -31,10 +32,12 @@ public class Cine_Hibernate {
         do{
             System.out.println("\n*************** MENU *****************");
             System.out.println("> 1. Mostrar todas las peliculas");
-            System.out.println("> 2. Insertar una película");
-            System.out.println("> 3. Modificar una película");
-            System.out.println("> 4. Eliminar una película");
-            System.out.println("> 5. Mostrar una película");
+            System.out.println("> 2. Mostrar una película");
+            System.out.println("> 3. Insertar una película");
+            System.out.println("> 4. Modificar una película");
+            System.out.println("> 5. Eliminar una película");
+            System.out.println("> 6. Mostrar una película");
+            System.out.println("> 7. Agregar un pase");
             System.out.println("> 0. Salir");
             
             do{
@@ -64,29 +67,34 @@ public class Cine_Hibernate {
                     peliculas.mostrarTodasLasPeliculas();
                     break;
                 case 2:
+                    // Mostrar una sola película
+                    Peliculas resultado = peliculas.buscarPeliculaPorNombre();
+                    peliculas.mostrarPelicula(resultado);
+                    break;
+                case 3:
                     // Insertar una película
                     peliculas.insertarPelicula();
                     break;
-                case 3:
+                case 4:
                     // Modificar una película
                     peliculas.modificarPelicula();
                     break;
-                case 4:
+                case 5:
                     // Eliminar una película
                     peliculas.eliminarPelicula();
-                    break;
-                case 5:
+                    break;   
+                case 6:
                     // Mostrar una película
                     System.out.println("- - - - Búsqueda por parámetros - - - - ");
                     Peliculas busqueda = peliculas.buscarPeliculaUnica();
                     if(busqueda != null){
                         peliculas.mostrarPelicula(busqueda);
                     }
-                    break;   
-                case 6:
-                    // Mostrar películas del actor
                     break;
                 case 7:
+                     // Mostrar películas del actor
+                    break;
+                case 8:
                     // Llenar salas (select a disponibles y replicar)
                         // Sala 1 Sesion 2 peli 2
                         // Sala 1 Sesion 3 pel 15
@@ -95,10 +103,11 @@ public class Cine_Hibernate {
                         // Sala 2 Sesion 3 peli 15
                         // Sala 3 Sesion 1 peli 1
                         // Sala 3 Sesion 2 peli 2
-                        // Sala 3 Sesion 3 peli 15
-                    
+                        // Sala 3 Sesion 3 peli 15     
+                        DisponibleDAO dispDAO = new DisponibleDAO();
+                        dispDAO.crearNuevoDisponibles();
                     break;
-                case 8:
+                case 9:
                     // Consultar todas las horas/sesiones y salas de una pelicula dada (por titulo)
                     // Tablas peliculas, pases, pase_sala, salas
                     /*
@@ -110,7 +119,14 @@ public class Cine_Hibernate {
                     
                         PELICULA, SESION, SALA(SALAS) , HORA(PASES)
                     */
-                    
+                    break;
+                case 10:
+                    /*
+                    - Reservar entradas - 
+                    Pedimos una sala y una sesión al usuario
+                    Mostramos cómo está actualmente la sala en forma de matriz
+                    Ocupadas _ y libre la letra de la butaca, pasillo en blanco
+                    */
                     break;
             }
             

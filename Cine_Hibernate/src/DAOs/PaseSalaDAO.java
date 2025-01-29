@@ -6,9 +6,12 @@
 package DAOs;
 
 import POJOs.PaseSala;
+import POJOs.Pases;
 import cine_hibernate.HibernateUtil;
 import java.util.List;
+import java.util.Scanner;
 import org.hibernate.HibernateException;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -33,9 +36,4 @@ public class PaseSalaDAO {
     }
     
     // FUNCIONES DE LA CLASE ---------------------------------------------------
-    public List<PaseSala> recogerPasesPorSala(String sid){
-        PaseSala pases = new PaseSala();
-        
-        return pases;
-    }
 }

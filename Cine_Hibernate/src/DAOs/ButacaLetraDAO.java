@@ -35,7 +35,7 @@ public class ButacaLetraDAO {
     // FUNCIONES DE LA CLASE ---------------------------------------------------
     public List<ButacaLetra> recogerTodasLasButacas(){
         List<ButacaLetra> listadoCompleto = null;
-        String query = "from ButacaLetra bl";
+        String query = "FROM ButacaLetra bl";
         
         iniciarOperacion();
         listadoCompleto = sesion.createQuery(query).list();

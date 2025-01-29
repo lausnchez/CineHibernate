@@ -394,20 +394,42 @@ public class PeliculasDAO {
         
         try{
             iniciarOperacion();
-            Query query = sesion.createQuery("FROM Peliculas p WHERE p.Titulo = :param1");
-            query.setString("param1", busqueda);
-            query.uniqueResult();
-
+            resultado = (Peliculas)sesion.createQuery("FROM Peliculas p WHERE p.Titulo = :param1")
+                    .setParameter("param1", busqueda)
+                    .uniqueResult();
         }catch(HibernateException he){
             manejarExcepcion(he);
             throw he;
         }finally{
             sesion.close();
-        }
-            
-        if(resultado == null){
-            System.out.println("No se encontraron resultados");
-        }
+        }       
+        if(resultado == null)System.out.println("No se encontraron resultados");
+        return resultado;
+    }
+    
+    public Peliculas buscarPeliculaPorPID(){
+        Peliculas resultado = null;
+        String busqueda = "";
+        
+        System.out.println("¿Qué desea buscar?");
+        System.out.print("    > ");
+        busqueda = scan.nextLine();
+        
+        if(Utils.comprobarInt(busqueda)){
+            try{
+                iniciarOperacion();
+                resultado = (Peliculas)sesion.createQuery("FROM Peliculas p WHERE p.pid = :param1")
+                        .setParameter("param1", Integer.parseInt(busqueda))
+                        .uniqueResult();
+            }catch(HibernateException he){
+                manejarExcepcion(he);
+                throw he;
+            }finally{
+                sesion.close();
+            }  
+        }else System.out.println("Valor no válido");
+        
+        if(resultado == null)System.out.println("No se encontraron resultados");
         return resultado;
     }
     
