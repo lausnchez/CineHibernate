@@ -55,7 +55,8 @@ public class DisponibleDAO {
         Pases paseBuscar = pasesDAO.recogerPasesUnico();
         // Recogemos todas las butacas de la sala
         List<ButacaLetra> butacasTotales = butacasDAO.recogerTodasLasButacas();
-        
+       
+        // Comprobamos que los tres valores existen
         boolean comprobarValido = true;
         
         if(paseBuscar == null ){
@@ -69,12 +70,12 @@ public class DisponibleDAO {
         } 
         
         if(comprobarValido){
-            if(recogerSalaPase(salaBuscar.getSid(), paseBuscar.getTid()) != null){
-                System.out.println("-------------------------");
+            System.out.println("-------------------------");
                 System.out.println("\nPelícula: " + peliABuscar.getTitulo());
                 System.out.println("Sala: " + salaBuscar.getSid());
                 System.out.println("Pase: " + paseBuscar.getHora());
                 System.out.println("-------------------------");
+            if(recogerSalaPase(salaBuscar.getSid(), paseBuscar.getTid()).size() == 0){ 
                 try{
                     iniciarOperacion();
                     Disponible nuevoDispo = null;
@@ -137,9 +138,8 @@ public class DisponibleDAO {
     public void reservarEntradas(){
         SalasDAO salasDAO = new SalasDAO();
         PasesDAO pasesDAO = new PasesDAO();
-        
-        
-        System.out.println("\n\n    - Reserva de entradas :");
+               
+        System.out.println("\n    - Reserva de entradas :");
         // Pedimos una sala
         System.out.println("> Sala: ");
         Salas salaBuscar = salasDAO.buscarSalaPorSid();
@@ -150,11 +150,22 @@ public class DisponibleDAO {
         
         List<Disponible> listadoButacas = recogerSalaPase(salaBuscar.getSid(), paseBuscar.getTid());
         if(listadoButacas != null){
-            
+            System.out.println("Se encontró un pase");
+            mostrarEntradas(listadoButacas);
         }else System.out.println("No se encontró una sesión en esa sala");     
     }
     
     public void mostrarEntradas(List<Disponible> butacas){
+        // Por cada butaca hace una comprobación de su posición
+        int filaNueva = -1;
         
+        for(Disponible disp: butacas){
+            // En caso de que sea una fila nueva imprimimos el número de fila
+            
+            if(filaNueva != disp.getFila()){
+                filaNueva = disp.getFila();
+                System.out.print("\n" + filaNueva + "    ");
+            }
+        }
     }    
 }

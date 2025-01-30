@@ -38,7 +38,10 @@ public class Cine_Hibernate {
             System.out.println("> 4. Modificar una película");
             System.out.println("> 5. Eliminar una película");
             System.out.println("> 6. Mostrar una película");
-            System.out.println("> 7. Agregar un pase");
+            System.out.println("> 7. Mostrar películas de un actor");
+            System.out.println("> 8. Agregar un pase");
+            System.out.println("> 9. Consultar sesiones y salas de una película");
+            System.out.println(">10. Reservar entradas");
             System.out.println("> 0. Salir");
             
             do{
@@ -58,6 +61,7 @@ public class Cine_Hibernate {
                 case 0: 
                     // Salir de la aplicación
                     System.out.println("Hasta pronto!");
+                    
                     break;
                 default: 
                     // Valor no contemplado en el menú
@@ -96,17 +100,15 @@ public class Cine_Hibernate {
                      // Mostrar películas del actor
                     break;
                 case 8:
-                    // Llenar salas (select a disponibles y replicar)
-                        // Sala 1 Sesion 2 peli 2
-                        // Sala 1 Sesion 3 pel 15
-                        // Sala 2 Sesion 1 peli 1
-                        // Sala 2 Sesion 2 peli 2
-                        // Sala 2 Sesion 3 peli 15
-                        // Sala 3 Sesion 1 peli 1
-                        // Sala 3 Sesion 2 peli 2
-                        // Sala 3 Sesion 3 peli 15     
-                        
-                        dispDAO.crearNuevoDisponibles();
+                    // Sala 1 Sesion 2 peli 2
+                    // Sala 1 Sesion 3 pel 15
+                    // Sala 2 Sesion 1 peli 1
+                    // Sala 2 Sesion 2 peli 2
+                    // Sala 2 Sesion 3 peli 15
+                    // Sala 3 Sesion 1 peli 1
+                    // Sala 3 Sesion 2 peli 2
+                    // Sala 3 Sesion 3 peli 15     
+                    dispDAO.crearNuevoDisponibles();
                     break;
                 case 9:
                     // Consultar todas las horas/sesiones y salas de una pelicula dada (por titulo)
@@ -119,8 +121,6 @@ public class Cine_Hibernate {
                         DISPONIBLE -> PID, SID, TID
                     
                         PELICULA, SESION, SALA(SALAS) , HORA(PASES)
-                    
-                    
                     */
                     break;
                 case 10:
@@ -140,6 +140,7 @@ public class Cine_Hibernate {
             */
             
         }while(opcion != 0);
+        System.exit(0);
     }
     
 }
