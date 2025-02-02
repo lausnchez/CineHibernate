@@ -8,6 +8,7 @@ package DAOs;
 import POJOs.Peliculas;
 import cine_hibernate.HibernateUtil;
 import cine_hibernate.Utils;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import org.hibernate.HibernateException;
@@ -593,4 +594,22 @@ public class PeliculasDAO {
         List<Peliculas> listado = sesion.createQuery("from Peliculas p").list();
         return listado;
     }
+    
+   public void mostrarPeliculasActor(){
+       List<Peliculas> listado = new ArrayList<Peliculas>();
+       String actor = "";
+       
+       Scanner scan = new Scanner(System.in);
+       System.out.print("Inserte un actor: ");
+       actor = scan.nextLine();
+       
+       iniciarOperacion();
+       listado = sesion.createQuery("FROM Peliculas p WHERE p.actores LIKE :param").setString("param","%" + actor + "%").list();
+       sesion.close();
+       
+       System.out.println("Se han encontrado " + listado.size() + " resultados.");
+       for(Peliculas peli: listado){
+           mostrarPelicula(peli);
+       }  
+   }
 }

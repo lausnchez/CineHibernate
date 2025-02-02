@@ -98,6 +98,7 @@ public class Cine_Hibernate {
                     break;
                 case 7:
                      // Mostrar películas del actor
+                    peliculas.mostrarPeliculasActor();
                     break;
                 case 8:
                     // Sala 1 Sesion 2 peli 2
