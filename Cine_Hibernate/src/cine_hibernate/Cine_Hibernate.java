@@ -133,6 +133,13 @@ public class Cine_Hibernate {
                     */
                     dispDAO.reservarEntradas();
                     break;
+                case 11:
+                    /*
+                    Encontrar la película que más espectadores tiene, 
+                    independientemente de las salas y los pases, mostrando todas
+                    las películas
+                    */
+                    break;
             }
             
             /*

@@ -12,6 +12,7 @@ import POJOs.Peliculas;
 import POJOs.Salas;
 import cine_hibernate.HibernateUtil;
 import cine_hibernate.Utils;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 import org.hibernate.HibernateException;
@@ -155,8 +156,21 @@ public class DisponibleDAO {
         if(listadoButacas != null){
             System.out.println("Se encontró un pase");
             mostrarEntradas(listadoButacas);
+            // Recoger la fila de la reserva
             int filaClienta = pedirFilaReserva("¿Qué fila desea reservar?", maximoFilas(salaBuscar, paseBuscar));
-            String butacaClienta = pedirButacaReserva("¿Qué butaca desea reservar?", listadoButacas);
+            // Recoger la butaca de la reserva
+            String butacaClienta = pedirButacaReserva("¿Qué butaca desea reservar?", filaClienta, listadoButacas);
+            // Comprobar la disponibilidad de la fila y butaca escogidas
+            if(comprobarDisponibilidadButaca
+                (filaClienta, butacaClienta, salaBuscar.getSid(), paseBuscar.getTid())){
+                // Reservar entrada y mostrar
+                comprarEntrada(filaClienta, butacaClienta, salaBuscar.getSid(), paseBuscar.getTid());
+                System.out.println("Entrada comprada");
+                // Mostrar las entradas actualizadas
+                mostrarEntradas(recogerSalaPase(salaBuscar.getSid(), paseBuscar.getTid()));
+            }else{
+                System.out.println("Butaca no disponible.\n");
+            }
         }else System.out.println("No se encontró una sesión en esa sala");     
     }
     
@@ -209,23 +223,75 @@ public class DisponibleDAO {
         return maxFilas;
     }
     
-    public int pedirButacaReserva(String pregunta, List<Disponible> listadoButacas){   
-        String filaReserva;
+    public String pedirButacaReserva(String pregunta, int fila, List<Disponible> listadoButacas){   
+        String butacaReserva;
         Scanner scan = new Scanner(System.in);
-        boolean filaValido = true;
+        boolean butacaValido = true;
+        HashMap<Integer, String> butacasFila = new HashMap();
+        int contador = 0;
         
-        do{   
-            filaValido = true;
-            System.out.print(pregunta + " ");
-            filaReserva = scan.nextLine();
-            if(!Utils.comprobarInt(filaReserva)){
-                filaValido = false;
-            }else{
-                if(Integer.parseInt(filaReserva) > maxFilas || Integer.parseInt(filaReserva) <= 0){
-                    filaValido = false;
-                }
+        // Recoger las butacas de la fila seleccionada
+        for(Disponible disp: listadoButacas){
+            if(disp.getFila() == fila){
+                butacasFila.put(contador, disp.getLetra());
+                contador++;
             }
-        }while(!filaValido); 
-        return Integer.parseInt(filaReserva);
+        }
+        
+        // Pedir butaca
+        do{   
+            butacaValido = true;
+            System.out.print(pregunta + " ");
+            butacaReserva = scan.nextLine();
+            if(
+                    (butacaReserva.length() < 0 && butacaReserva.length() > 3) ||
+                    !butacasFila.containsValue(butacaReserva) ||
+                    butacaReserva.equals("PP"))
+            {
+                butacaValido = false;
+                System.out.println("Butaca no válida. Inserte una sola letra dentro del rango de las butacas de la fila seleccionada.\n");
+            }
+            
+        }while(!butacaValido); 
+        return butacaReserva;
+    }
+    
+    public boolean comprobarDisponibilidadButaca(int fila, String butaca, int sid, int tid){
+        boolean disponible = true;
+        
+        iniciarOperacion();
+        int estado = (int)sesion.createQuery
+            ("SELECT estado FROM Disponible d WHERE sid=:param1 AND tid=:param2 AND d.fila=:param3 AND d.letra=:param4")          
+            .setInteger("param1", sid)
+            .setInteger("param2", tid)
+            .setInteger("param3", fila)
+            .setString("param4", butaca)
+            .list().get(0);
+        if(estado != 0){
+            disponible = false;
+        }
+        sesion.close();
+        return disponible;
+    }
+    
+    public void comprarEntrada(int fila, String butaca, int sid, int tid){
+        iniciarOperacion();
+        try{
+            // Recoger butaca
+            Disponible dispReserva = (Disponible)sesion.createQuery("FROM Disponible d WHERE sid=:param1 AND tid=:param2 AND fila=:param3 AND letra=:param4")          
+                .setInteger("param1", sid)
+                .setInteger("param2", tid)
+                .setInteger("param3", fila)
+                .setString("param4", butaca)
+                .list().get(0);
+            dispReserva.setEstado(1);
+            sesion.update(dispReserva);
+            tx.commit();
+        }catch(HibernateException he){
+            manejarExcepcion(he);
+            throw he;
+        }finally{
+            sesion.close();
+        }
     }
 }
