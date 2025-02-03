@@ -9,6 +9,7 @@ import POJOs.Peliculas;
 import cine_hibernate.HibernateUtil;
 import cine_hibernate.Utils;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 import org.hibernate.HibernateException;
@@ -611,5 +612,5 @@ public class PeliculasDAO {
        for(Peliculas peli: listado){
            mostrarPelicula(peli);
        }  
-   }
+   } 
 }

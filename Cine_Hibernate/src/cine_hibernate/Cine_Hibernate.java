@@ -139,6 +139,7 @@ public class Cine_Hibernate {
                     independientemente de las salas y los pases, mostrando todas
                     las películas
                     */
+                    dispDAO.contarEspectadores();
                     break;
             }
             
