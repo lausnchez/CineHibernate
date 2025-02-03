@@ -11,7 +11,9 @@ import POJOs.Pases;
 import POJOs.Peliculas;
 import POJOs.Salas;
 import cine_hibernate.HibernateUtil;
+import cine_hibernate.Utils;
 import java.util.List;
+import java.util.Scanner;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -138,7 +140,8 @@ public class DisponibleDAO {
     public void reservarEntradas(){
         SalasDAO salasDAO = new SalasDAO();
         PasesDAO pasesDAO = new PasesDAO();
-               
+        Scanner scan = new Scanner(System.in);
+        
         System.out.println("\n    - Reserva de entradas :");
         // Pedimos una sala
         System.out.println("> Sala: ");
@@ -146,26 +149,83 @@ public class DisponibleDAO {
         // Pedimos un pase
         System.out.println("> Hora del pase: ");
         Pases paseBuscar = pasesDAO.recogerPasesUnico();
-        // Recogemos todas las butacas de la sala
         
+        // Recogemos todas las butacas de la sala 
         List<Disponible> listadoButacas = recogerSalaPase(salaBuscar.getSid(), paseBuscar.getTid());
         if(listadoButacas != null){
             System.out.println("Se encontró un pase");
             mostrarEntradas(listadoButacas);
+            int filaClienta = pedirFilaReserva("¿Qué fila desea reservar?", maximoFilas(salaBuscar, paseBuscar));
+            String butacaClienta = pedirButacaReserva("¿Qué butaca desea reservar?", listadoButacas);
         }else System.out.println("No se encontró una sesión en esa sala");     
     }
     
     public void mostrarEntradas(List<Disponible> butacas){
         // Por cada butaca hace una comprobación de su posición
         int filaNueva = -1;
-        
-        for(Disponible disp: butacas){
-            // En caso de que sea una fila nueva imprimimos el número de fila
-            
+        System.out.println(" >> MOSTRAR BUTACAS");
+        System.out.print("----------------------------------------------------");
+        for(Disponible disp: butacas){        
+            // En caso de que sea una fila nueva imprimimos el número de fila 
             if(filaNueva != disp.getFila()){
                 filaNueva = disp.getFila();
                 System.out.print("\n" + filaNueva + "    ");
             }
+            // Imprimimos las butacas
+            if(!disp.getLetra().trim().equals("PP")){
+                if(disp.getEstado() == 0){
+                    System.out.print(" " + disp.getLetra());
+                }else System.out.print(" _");
+            }else System.out.print("       ");
         }
-    }    
+        System.out.println("\n");
+    } 
+    
+    public int pedirFilaReserva(String pregunta, int maxFilas){   
+        String filaReserva;
+        Scanner scan = new Scanner(System.in);
+        boolean filaValido = true;
+        
+        do{   
+            filaValido = true;
+            System.out.print(pregunta + " ");
+            filaReserva = scan.nextLine();
+            if(!Utils.comprobarInt(filaReserva)){
+                filaValido = false;
+            }else{
+                if(Integer.parseInt(filaReserva) > maxFilas || Integer.parseInt(filaReserva) <= 0){
+                    filaValido = false;
+                }
+            }
+        }while(!filaValido); 
+        return Integer.parseInt(filaReserva);
+    }
+    
+    public int maximoFilas(Salas sala, Pases pase){
+        iniciarOperacion();
+        int maxFilas = (int)sesion.createQuery
+                ("SELECT MAX(d.fila) from Disponible d where sid="+ sala.getSid() +" AND tid=" + pase.getTid())
+                .list().get(0);
+        return maxFilas;
+    }
+    
+    public int pedirButacaReserva(String pregunta, List<Disponible> listadoButacas){   
+        String filaReserva;
+        Scanner scan = new Scanner(System.in);
+        boolean filaValido = true;
+        
+        do{   
+            filaValido = true;
+            System.out.print(pregunta + " ");
+            filaReserva = scan.nextLine();
+            if(!Utils.comprobarInt(filaReserva)){
+                filaValido = false;
+            }else{
+                if(Integer.parseInt(filaReserva) > maxFilas || Integer.parseInt(filaReserva) <= 0){
+                    filaValido = false;
+                }
+            }
+        }while(!filaValido); 
+        return Integer.parseInt(filaReserva);
+    }
 }
