@@ -42,6 +42,7 @@ public class Cine_Hibernate {
             System.out.println("> 8. Agregar un pase");
             System.out.println("> 9. Consultar sesiones y salas de una película");
             System.out.println(">10. Reservar entradas");
+            System.out.println(">11. Contar espectadores");
             System.out.println("> 0. Salir");
             
             do{

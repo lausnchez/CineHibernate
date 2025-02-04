@@ -160,7 +160,7 @@ public class DisponibleDAO {
 
         // Recogemos todas las butacas de la sala 
         List<Disponible> listadoButacas = recogerSalaPase(salaBuscar.getSid(), paseBuscar.getTid());
-        if (listadoButacas != null) {
+        if (listadoButacas.size() != 0) {
             System.out.println("Se encontró un pase");
             mostrarEntradas(listadoButacas);
             // Recoger la fila de la reserva
@@ -304,7 +304,7 @@ public class DisponibleDAO {
     }
 
     public void contarEspectadores() {
-        try {
+        /*try {
             iniciarOperacion();
             // Recogemos todas las taquillas
             String query = "SELECT Peliculas.pid, COUNT(estado) FROM Disponible d WHERE d.estado = 1 GROUP BY Peliculas.pid ORDER BY COUNT(estado) DESC";
@@ -325,6 +325,25 @@ public class DisponibleDAO {
             throw he;
         } finally {
             sesion.close();
+        }
+        */
+        iniciarOperacion();
+        /*String query = "SELECT p.titulo, count(d.estado)"
+                + " FROM Peliculas p, Disponible d "
+                + "WHERE p.pid=d.pid AND estado = 1 "
+                + "GROUP BY d.pid "
+                + "ORDER BY count(d.estado)";
+        */
+        
+        String query = "SELECT p.titulo, count(d.estado) FROM Disponible d, Peliculas p WHERE d.peliculas.pid=p.pid AND d.estado = 1 GROUP BY d.peliculas.pid ORDER BY count(d.estado)";
+        List<Object[]> resultados = sesion.createQuery(query).list();
+        int contador = 1;
+        System.out.println("");
+        for(Object[] pelicula: resultados){
+            String titulo = (String)pelicula[0];
+            long espectadores = (long)pelicula[1];
+            System.out.println(contador + ". " + titulo + ": " + espectadores + " espectadores.");
+            contador++;
         }
     }
 }
